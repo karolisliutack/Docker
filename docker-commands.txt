@@ -1,0 +1,49 @@
+docker ps #get active running containers
+docker rm -f *container id* #remove container and force if it is running
+docker stats *container id*  #to check CPU, RAM usage
+docker run -d --name *name* image #create container with provided name based on provided image
+docker run --help | grep memory #filter commands based on memory
+docker run -d --name *name* --memory "200mb" *image:alpine* #create container based on provided image and limited to 200Mib of RAM of local machine resource where docker is running
+grep "model name" /proc/cpuinfo | wc -l # get processor number -Centos
+docker run -d --name *service* --memory "300mb" --cpuset-cpus 0-1*image:alpine* #arrange 2 cpus and 300mb to container
+docker run --name *name* -p 8080:80 httpd #run image on port exposed 8080 on port 80 -d
+docker cp test.html *location*#copy file to container test.html
+docker exec -ti *container name* bash # log in to container within bash
+docker cp *containername*:/opt/test.txt . :#from container test.txt copy to local machine
+docker commit *id or name of container* *name of the image* #creates image snapshot of the running container
+docker run --rm ti *image* bash # container gets removed once exited
+docker info | grep -i root #Docker root Dir info
+docker run -d -v /mnt/mysql:/var/lib/mysql --name mysql -e "MYSQL_ROOT_PASSWORD=password" mysql:5.7 # docker creates volume on /mnt/mysql and maps var/lib/mysql folder on container. Once container dies all information is saved on /mnt/mysql host machine 
+docker volume create *name* #create a volume
+docker volume ls # lists available volumes
+docker volume ls -f=dangling=true #not associated to any containers
+docker volume rm $(docker volume ls -f=dangling=true -q) #remove all dangling volumes
+
+networking
+
+ip a #list all networks
+dp a | grep docker # list all docker network
+docker network ls #list available docker networks
+docker network inspect *name of the network* #more information about docker network
+docker network create -d bridge --subnet 172.16.0.0/16 --gateway 172.18.0.1 new_network #creates new_network network with provided subnet and gateway
+docker network rm new_network #remove network
+docker run -dti --network test_network --ip *ip* --name test centos #static IP creation for container
+docker run --rm -ti --network host centos bash #creates same network as local machine host
+
+docker compose structure
+version:
+services:
+volumes:
+networks:
+
+
+host network - same network as your local machine
+bridge network - default network
+Gateway: 
+Subnet: 
+docker0 interface with default networks are created when docker is installed 
+by default network containers can be accessed only by IP
+Container State is always taken from the image
+By created network you can ping containers by their name and IP
+
+
